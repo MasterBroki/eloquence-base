@@ -3,8 +3,8 @@
     "description": "Flexible Searchable, Mappable, Metable, Validation and more extensions for Laravel Eloquent ORM.",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/jarektkaczyk/eloquence-base/issues",
-        "source": "https://github.com/jarektkaczyk/eloquence-base"
+        "issues": "https://github.com/MasterBroki/eloquence-base/issues",
+        "source": "https://github.com/MasterBroki/eloquence-base"
     },
     "keywords": [
         "laravel",
@@ -15,6 +15,11 @@
         "mutable"
     ],
     "authors": [
+        {
+            "name": "Charles Brocchiero",
+            "email": "charles.brocchiero@hec.ca",
+            "role": "Developer"
+        },
         {
             "name": "Jarek Tkaczyk",
             "email": "jarek@softonsofa.com",
