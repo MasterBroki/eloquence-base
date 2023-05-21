@@ -16,7 +16,7 @@ Currently available extensions:
 ## Installation
 
 ```bash
-composer require sofa/eloquence-base
+composer require masterbroki/eloquence-base
 ```
 
 **Check the [documentation](https://github.com/jarektkaczyk/eloquence/wiki) for installation and usage info, [website](http://softonsofa.com/tag/eloquence/) for examples and [API reference](http://jarektkaczyk.github.io/eloquence-api)**
