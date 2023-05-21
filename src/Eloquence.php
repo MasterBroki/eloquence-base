@@ -3,10 +3,9 @@
 namespace Sofa\Eloquence;
 
 use Illuminate\Database\Connection;
-use Sofa\Hookable\Hookable;
-use Sofa\Hookable\Contracts\ArgumentBag;
-use Sofa\Eloquence\Query\Builder as QueryBuilder;
 use Sofa\Eloquence\AttributeCleaner\Observer as AttributeCleaner;
+use Sofa\Eloquence\Query\Builder as QueryBuilder;
+use Sofa\Hookable\Hookable;
 
 /**
  * This trait is an entry point for all the hooks that we want to apply
@@ -47,22 +46,18 @@ trait Eloquence
      * Determine whether where should be treated as whereNull.
      *
      * @param  string $method
-     * @param  ArgumentBag $args
      * @return bool
      */
-    protected function isWhereNull($method, ArgumentBag $args)
-    {
+    protected function isWhereNull($method, $args) {
         return $method === 'whereNull' || $method === 'where' && $this->isWhereNullByArgs($args);
     }
 
     /**
      * Determine whether where is a whereNull by the arguments passed to where method.
      *
-     * @param  ArgumentBag $args
      * @return bool
      */
-    protected function isWhereNullByArgs(ArgumentBag $args)
-    {
+    protected function isWhereNullByArgs($args) {
         return is_null($args->get('operator'))
             || is_null($args->get('value')) && !in_array($args->get('operator'), ['<>', '!=']);
     }
@@ -100,7 +95,7 @@ trait Eloquence
 
         return [$target, $column];
     }
-
+    
     /**
      * Determine whether the key is meta attribute or actual table field.
      *

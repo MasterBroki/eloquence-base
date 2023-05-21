@@ -26,52 +26,74 @@ class SearchableBuilderTest extends TestCase
         $sql = 'select * from (select `users`.*, max(case when `users`.`last_name` = ? then 150 else 0 end) ' .
                'as relevance from `users` where (`users`.`last_name` like ?) ' .
                'group by `users`.`primary_key`) as `users` where `relevance` >= 2.50 order by `relevance` desc';
-
+    
         $bindings = ['jaros_aw', 'jaros_aw'];
-
+    
         $model = $this->getModel();
-
+    
         $query = $model->search(' jaros?aw ', ['last_name' => 10], false);
-
+    
         $this->assertEquals($sql, $query->toSql());
         $this->assertEquals($bindings, $query->getBindings());
     }
-
-    /** @test */
-    public function it_moves_wheres_with_bindings_to_subquery_correctly()
-    {
-        $innerBindings = [
-            'jarek', 'jarek',
-            'inner_1', 'inner_2', 'inner_3', 'inner_4',
-            'inner_5', 'inner_6', 'inner_7', 'inner_8',
-        ];
-
-        $outerBindings = [
-            'outer_1', 'outer_2', 'outer_3', 'outer_4',
-            'outer_5', 'outer_6', 'outer_7', 'outer_8',
-        ];
-
+    
+    public function testWhereBetween() {
+        /** @var Builder $model */
         $model = $this->getModel();
         $model->getConnection()->shouldReceive('select')->once()->andReturn([]);
-
+        
         $query = $model
-                  ->search('jarek', 'first_name', false)
+            ->search('jarek', 'first_name', false)
+            ->whereBetween('id', ['inner_2', 'inner_3']);
+        $query->get();
+    }
+    
+    /** @test */
+    public function it_moves_wheres_with_bindings_to_subquery_correctly() {
+        
+        $model = $this->getModel();
+        $model->getConnection()->shouldReceive('select')->once()->andReturn([]);
+        
+        $query = $model
+            ->search('jarek', 'first_name', false)
                   ->where('id', 'inner_1')
                   ->where('profiles.id', '<', 'outer_1')
                   ->whereBetween('id', ['inner_2', 'inner_3'])
-                  ->whereRaw('users.first_name = ?', ['outer_2'])
-                  ->whereRaw('users.first_name in (?, ?, ?)', ['outer_3', 'outer_4', 'outer_5'])
-                  ->whereIn('id', ['inner_4', 'inner_5', 'inner_6', 'inner_7'])
-                  ->whereNotNull('id')
-                  ->whereExists(function ($q) {
-                      $q->whereIn('id', ['outer_6', 'outer_7']);
-                  })
-                  ->whereRaw('first_name = ?', ['outer_8'])
-                  ->whereDate('id', '=', ['inner_8'])
-                  ->where('last_name', new Expression('tkaczyk'));
-
+            ->whereRaw('users.first_name = ?', ['outer_2'])
+            ->whereRaw('users.first_name in (?, ?, ?)', ['outer_3', 'outer_4', 'outer_5'])
+            ->whereIn('id', ['inner_4', 'inner_5', 'inner_6', 'inner_7'])
+            ->whereNotNull('id')
+            ->whereExists(function ($q) {
+                $q->whereIn('id', ['outer_6', 'outer_7']);
+            })
+            ->whereRaw('first_name = ?', ['outer_8'])
+            ->whereDate('id', '=', ['inner_8'])
+            ->where('last_name', new Expression('tkaczyk'));;
         $query->get();
-
+        
+        $innerBindings = [
+            'jarek',
+            'jarek',
+            'inner_1',
+            'inner_2',
+            'inner_3',
+            'inner_4',
+            'inner_5',
+            'inner_6',
+            'inner_7',
+            'inner_8',
+        ];
+        
+        $outerBindings = [
+            'outer_1',
+            'outer_2',
+            'outer_3',
+            'outer_4',
+            'outer_5',
+            'outer_6',
+            'outer_7',
+            'outer_8',
+        ];
         $this->assertEquals($innerBindings, $query->getQuery()->getRawBindings()['select']);
         $this->assertEquals($outerBindings, $query->getQuery()->getRawBindings()['where']);
     }

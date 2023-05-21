@@ -1,4 +1,6 @@
 /coverage/
 /vendor/
 /node_modules/
-composer.lock
+/phpunit.xml.bak
+/.idea/
+.phpunit.cache

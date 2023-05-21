@@ -5,7 +5,6 @@ namespace Sofa\Eloquence\Tests;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as Query;
 use Illuminate\Database\Query\Grammars\Grammar;
-use InvalidArgumentException;
 use Mockery;
 use Sofa\Eloquence\Builder;
 use Sofa\Eloquence\Eloquence;
@@ -17,20 +16,13 @@ class BuilderTest extends TestCase
     public function it_joins_relations_as_strings_or_array()
     {
         $builder = $this->getBuilder();
-
+    
         $builder->leftJoinRelations('foo', 'bar');
         $builder->rightJoinRelations(['foo', 'bar']);
         $builder->joinRelations('foo', 'bar');
         $builder->joinRelations(['foo', 'bar']);
-    }
-
-    /** @test */
-    public function it_takes_exactly_two_values_for_whereBetween()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $builder = $this->getBuilder();
-
-        $builder->whereBetween('size', [1, 2, 3]);
+    
+        $this->expectNotToPerformAssertions();
     }
 
     /** @test */

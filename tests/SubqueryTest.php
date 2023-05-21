@@ -33,11 +33,12 @@ class SubqueryTest extends TestCase
         $builder->method('toSql')->willReturn('select * from "table" where id = ?');
         $sub = new Subquery($builder);
 
-        $this->assertEquals('(select * from "table" where id = ?)', (string) $sub);
+        $this->assertEquals('(select * from "table" where id = ?)', $sub->getValue($sub->getGrammar()));
 
         $sub->setAlias('table_alias');
-
-        $this->assertEquals('(select * from "table" where id = ?) as "table_alias"', (string) $sub);
+    
+        $this->assertEquals('(select * from "table" where id = ?) as "table_alias"',
+            $sub->getValue($sub->getGrammar()));
         $this->assertEquals('table_alias', $sub->getAlias());
     }
 
